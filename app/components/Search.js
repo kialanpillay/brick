@@ -6,7 +6,9 @@ import {
   View,
   Text,
   TextInput,
+  FlatList,
 } from 'react-native';
+import Item from './Item.js';
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -19,25 +21,40 @@ export default class Search extends React.Component {
       loading: false,
       query: '',
       response: [],
+      data: [],
     };
     this.handleQuery = this.handleQuery.bind(this);
     this.query = this.query.bind(this);
+    this.processQuery = this.processQuery.bind(this);
   }
 
-  query = () => {
+  stringBuilder = text => {
+    let tokens = text.split(" ");
     
+    return tokens.join('+');
+  };
+
+  processQuery = () => {
+    this.setState({
+      data: this.state.response.sets,
+    });
+  };
+
+  query = () => {
+    let queryString = this.stringBuilder(this.state.query);
     let params =
       'apiKey=' +
       this.state.apiKey +
       '&userHash=' +
       this.state.hash +
-      '&params={query:"'+this.state.query+'"}';
-    console.log(params)
+      '&params={query:"' +
+      queryString +
+      '"}';
+    console.log(params);
     fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
       method: 'GET',
     })
       .then(response => response.json())
-      .then(response => console.log(response))
       .then(response => {
         this.setState({
           response: response,
@@ -46,7 +63,8 @@ export default class Search extends React.Component {
       })
       .catch(function(e) {
         console.log('Fetch Failed' + e.message);
-      });
+      })
+      .then(this.processQuery);
   };
 
   handleQuery = text => {
@@ -58,9 +76,7 @@ export default class Search extends React.Component {
       <>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
-              Search Tool
-            </Text>
+            <Text style={styles.sectionTitle}>Search Tool</Text>
             <TextInput
               style={styles.input}
               placeholder="Query"
@@ -70,13 +86,18 @@ export default class Search extends React.Component {
               autoCorrect={false}
               onChangeText={this.handleQuery}
             />
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8} onPress={this.query}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8}
+              onPress={this.query}>
               <Text style={styles.submitButtonText}> Search </Text>
             </TouchableOpacity>
-
-            <Text style={styles.sectionDescription}>
-              OR
-            </Text>
+            <FlatList
+              style={styles.list}
+              keyExtractor={item => item.setID.toString()}
+              data={this.state.data}
+              renderItem={({item}) => <Item item={item} />}
+            />
           </View>
         </View>
       </>
@@ -93,6 +114,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     height: '80%',
     paddingHorizontal: 24,
+    flex: 1,
+    flexDirection: 'column',
+  },
+  list: {
     flex: 1,
     flexDirection: 'column',
   },
@@ -124,6 +149,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
+    marginBottom: 20,
     backgroundColor: 'white',
     height: 60,
     borderRadius: 99,
