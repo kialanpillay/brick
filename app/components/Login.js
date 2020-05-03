@@ -26,6 +26,7 @@ export default class Login extends React.Component {
     this.handleUsername = this.handleUsername.bind(this);
     this.login = this.login.bind(this);
     this.setUser = this.setUser.bind(this);
+    this.guestLogin = this.guestLogin.bind(this);
   }
 
   handleUsername = text => {
@@ -59,6 +60,11 @@ export default class Login extends React.Component {
       this.props.navigation.navigate('Home');
     }
   };
+
+  guestLogin = () => {
+    this.props.setUser("Guest", "");
+    this.props.navigation.navigate('Home');
+  }
 
   componentDidMount() {
     this.setUser;
@@ -116,6 +122,12 @@ export default class Login extends React.Component {
               activeOpacity={0.8}
               onPress={this.login}>
               <Text style={styles.submitButtonText}> LOG IN </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8}
+              onPress={this.guestLogin}>
+              <Text style={styles.submitButtonText}> GUEST</Text>
             </TouchableOpacity>
           </View>
         </View>
