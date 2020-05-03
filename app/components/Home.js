@@ -1,12 +1,6 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-} from 'react-native';
-
+import {StyleSheet, TouchableOpacity, View, Text, Image} from 'react-native';
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -65,24 +59,26 @@ export default class Home extends React.Component {
         console.log('Fetch Failed' + e.message);
       });
   };
-
-  componentDidMount() {
-    //this.getOwned();
-    //this.getWanted();
-  }
-
   render() {
     return (
       <>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
+            <View style={styles.box}>
+              <Image style={styles.logo} source={require('./logo.png')} />
+            </View>
             <Text style={styles.sectionTitle}>
               Welcome, {this.state.username}
             </Text>
             <Text style={styles.sectionDescription}>
               What would you like to do today?
             </Text>
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8} onPress={() => {this.props.navigation.navigate('Search');}}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8}
+              onPress={() => {
+                this.props.navigation.navigate('Search');
+              }}>
               <Text style={styles.submitButtonText}> Search Sets </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
@@ -149,5 +145,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '400',
+  },
+  box: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  logo: {
+    marginBottom: 30,
+    height: 100,
+    width: 100,
   },
 });
