@@ -9,6 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import Item from './Item.js';
+import {showMessage, hideMessage} from 'react-native-flash-message';
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -38,6 +39,18 @@ export default class Search extends React.Component {
     this.setState({
       data: this.state.response.sets,
     });
+    console.log(this.state.data.length)
+    if(this.state.data.length == 0){
+        showMessage({
+            message: 'No Sets Found!',
+            type: 'default',
+            backgroundColor: 'black', // background color
+            color: 'white', // text color
+            duration: 2000,
+            position: 'bottom',
+            icon: 'info'
+          });
+    }
   };
 
   query = () => {
@@ -76,7 +89,7 @@ export default class Search extends React.Component {
       <>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Search Tool</Text>
+            <Text style={styles.sectionTitle}>Set Search</Text>
             <TextInput
               style={styles.input}
               placeholder="Query"
@@ -120,6 +133,7 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     flexDirection: 'column',
+    marginBottom: 40,
   },
   sectionTitle: {
     marginTop: 20,
