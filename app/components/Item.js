@@ -1,21 +1,21 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 
 export default function Item(props) {
   return (
-    <TouchableOpacity activeOpacity={0.5}>
-      <View style={styles.item}>
-        <View style={styles.row}>
-          <Text style={styles.setID}>{props.item.number}</Text>
-          <Text style={styles.year}>{props.item.year}</Text>
-        </View>
-        <Text style={styles.name}>{props.item.name}</Text>
-        <Text style={styles.pieces}>
-          {props.item.pieces != undefined ? props.item.pieces + ' Pieces' : ''}
-        </Text>
+    <View style={styles.item}>
+      <View style={styles.row}>
+        <Text style={styles.setID}>{props.item.number}</Text>
+        <Text style={styles.year}>{props.item.year}</Text>
       </View>
-    </TouchableOpacity>
+      <Text style={styles.name}>{props.item.name}</Text>
+      <Text style={styles.pieces}>
+        {props.item.pieces != undefined
+          ? props.item.pieces + ' Pieces'
+          : ''}
+      </Text>
+    </View>
   );
 }
 

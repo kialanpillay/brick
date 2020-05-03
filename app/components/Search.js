@@ -27,11 +27,17 @@ export default class Search extends React.Component {
     this.handleQuery = this.handleQuery.bind(this);
     this.query = this.query.bind(this);
     this.processQuery = this.processQuery.bind(this);
+    this.setItem = this.setItem.bind(this);
   }
 
+  setItem = item => {
+    this.props.setItem(item);
+    this.props.navigation.navigate('Set');
+  };
+
   stringBuilder = text => {
-    let tokens = text.split(" ");
-    
+    let tokens = text.split(' ');
+
     return tokens.join('+');
   };
 
@@ -39,17 +45,16 @@ export default class Search extends React.Component {
     this.setState({
       data: this.state.response.sets,
     });
-    console.log(this.state.data.length)
-    if(this.state.data.length == 0){
-        showMessage({
-            message: 'No Sets Found!',
-            type: 'default',
-            backgroundColor: 'black', // background color
-            color: 'white', // text color
-            duration: 2000,
-            position: 'bottom',
-            icon: 'info'
-          });
+    if (this.state.data.length == 0) {
+      showMessage({
+        message: 'No Sets Found!',
+        type: 'default',
+        backgroundColor: 'black', // background color
+        color: 'white', // text color
+        duration: 2000,
+        position: 'bottom',
+        icon: 'info',
+      });
     }
   };
 
@@ -109,7 +114,13 @@ export default class Search extends React.Component {
               style={styles.list}
               keyExtractor={item => item.setID.toString()}
               data={this.state.data}
-              renderItem={({item}) => <Item item={item} />}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onLongPress={(event) => this.setItem(item)}>
+                  <Item item={item} />
+                </TouchableOpacity>
+              )}
             />
           </View>
         </View>
