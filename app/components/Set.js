@@ -45,7 +45,6 @@ export default class Search extends React.Component {
       localPrice: price.toFixed(2),
       currencySymbol: this.state.locationData.currency,
     });
-    console.log(this.state.localPrice);
   };
 
   getCurrency = () => {
@@ -65,7 +64,6 @@ export default class Search extends React.Component {
   };
 
   getLocation = () => {
-    console.log('location');
     fetch('https://ipapi.co/json/')
       .then(response => response.json())
       .then(response => {
@@ -179,7 +177,7 @@ export default class Search extends React.Component {
                 </Text>
               </View>
             </View>
-            <Text style={styles.sectionSubtitle}>Collection Statistics</Text>
+            <Text style={styles.sectionSubtitle}>Collections</Text>
             <View style={styles.row}>
               <View style={styles.collectionsBox}>
                 <Text style={styles.collections}>
@@ -203,7 +201,9 @@ export default class Search extends React.Component {
               <TouchableOpacity
                 style={styles.ownedButton}
                 onPress={this.setViewerVisibile}>
-                <Text style={styles.collectionButtonText}>Own</Text>
+                <Text style={styles.collectionButtonText}>
+                  {this.state.qty == 0 ? 'Own' : 'Edit'}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={styles.row}>
@@ -217,7 +217,9 @@ export default class Search extends React.Component {
               <TouchableOpacity
                 style={styles.wantedButton}
                 onPress={this.setViewerVisibile}>
-                <Text style={styles.collectionButtonText}>Want</Text>
+                <Text style={styles.collectionButtonText}>
+                  {this.state.wanted == true ? 'Edit' : 'Want'}
+                </Text>
               </TouchableOpacity>
             </View>
             <Modal
@@ -236,8 +238,28 @@ export default class Search extends React.Component {
             <TouchableOpacity
               style={styles.submitButton}
               onPress={this.setViewerVisibile}>
-              <Text style={styles.submitButtonText}>View Set Images</Text>
+              <Text style={styles.submitButtonText}>Images</Text>
             </TouchableOpacity>
+            <Text style={styles.sectionSubtitle}>Insights</Text>
+            <View style={styles.row}>
+              <View style={styles.reviewBox}>
+                <View style={styles.row}>
+                  <Text style={styles.reviewText}>Reviews: </Text>
+                  <Text style={styles.reviews}>
+                    {this.props.item.reviewCount}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.reviewBox}>
+                <View style={styles.row}>
+                  <Text style={styles.reviewText}>Rating: </Text>
+                  <Text style={styles.rating}>{this.props.item.rating}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.box}>
+              <Image style={styles.logo} source={require('./logo.png')} />
+            </View>
           </View>
         </View>
       </>
@@ -335,6 +357,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '45%',
   },
+  reviewBox: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'white',
+    padding: 10,
+    marginRight: 38,
+    marginBottom: 10,
+    width: '45%',
+  },
   ownedBox: {
     backgroundColor: 'transparent',
     borderColor: 'white',
@@ -385,6 +417,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
   },
+  reviewText: {
+    fontSize: 18,
+    color: 'black',
+  },
+  reviews: {
+    fontSize: 18,
+    color: 'green',
+    fontWeight: '700',
+  },
+  rating: {
+    fontSize: 18,
+    color: 'orange',
+    fontWeight: '700',
+  },
   row: {
     flexDirection: 'row',
   },
@@ -419,6 +465,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
+    marginBottom: 10,
     backgroundColor: 'white',
     height: 60,
     borderRadius: 99,
@@ -453,5 +500,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     letterSpacing: 0,
+  },
+  logo: {
+    marginTop: 30,
+    height: 70,
+    width: 70,
   },
 });
