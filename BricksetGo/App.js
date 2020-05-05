@@ -7,6 +7,7 @@ import Home from './components/Home.js';
 import Search from './components/Search.js';
 import Set from './components/Set.js';
 import Browse from './components/Browse.js';
+import Collection from './components/Collection.js';
 import FlashMessage from "react-native-flash-message";
 Stack = createStackNavigator();
 
@@ -52,6 +53,9 @@ class App extends React.Component {
             </Stack.Screen>
             <Stack.Screen name="Browse" options={{headerShown: false}}>
               {props => <Browse {...props} setItem={this.setItem} username={this.state.username} hash={this.state.hash} />}
+            </Stack.Screen>
+            <Stack.Screen name="Collection" options={{headerShown: false}}>
+              {props => <Collection {...props} username={this.state.username} hash={this.state.hash} />}
             </Stack.Screen>
           </Stack.Navigator>
           <FlashMessage ref="myLocalFlashMessage" />

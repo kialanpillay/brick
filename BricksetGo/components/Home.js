@@ -1,6 +1,8 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import {StyleSheet, TouchableOpacity, View, Text, Image} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
+
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -8,57 +10,9 @@ export default class Home extends React.Component {
       username: this.props.username,
       apiKey: '3-erab-QjV7-Kvhvh',
       hash: this.props.hash,
-      status: '',
-      loading: true,
-      setsOwned: 0,
-      response: [],
     };
-    this.getOwned = this.getOwned.bind(this);
-    this.getWanted = this.getWanted.bind(this);
   }
 
-  getOwned = () => {
-    let params =
-      'apiKey=' +
-      this.state.apiKey +
-      '&userHash=' +
-      this.state.hash +
-      '&params={owned:1}';
-    fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(response => {
-        this.setState({
-          setsOwned: response.matches,
-          loading: false,
-        });
-      })
-      .catch(function(e) {
-        console.log('Fetch Failed' + e.message);
-      });
-  };
-
-  getWanted = () => {
-    let params =
-      'apiKey=' +
-      this.state.apiKey +
-      '&userHash=' +
-      this.state.hash +
-      '&params={wanted:1}';
-    fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(response => {
-        this.setState({
-          setsWanted: response.matches,
-        });
-      })
-      .catch(function(e) {
-        console.log('Fetch Failed' + e.message);
-      });
-  };
   render() {
     return (
       <>
@@ -83,13 +37,28 @@ export default class Home extends React.Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.submitButton}
-              activeOpacity={0.8} onPress={() => {
+              activeOpacity={0.8}
+              onPress={() => {
                 this.props.navigation.navigate('Browse');
-              }}
-              ><Text style={styles.submitButtonText}> Browse </Text>
+              }}>
+              <Text style={styles.submitButtonText}> Browse </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
-              <Text style={styles.submitButtonText}>Manage Collection</Text>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8}
+              onPress={() => {
+                this.state.hash != ''
+                  ? this.props.navigation.navigate('Collection')
+                  : showMessage({
+                    message: 'Not Logged In!',
+                    type: 'default',
+                    backgroundColor: 'black', // background color
+                    color: 'white', // text color
+                    duration: 2000,
+                    icon: 'warning',
+                  });
+              }}>
+              <Text style={styles.submitButtonText}>My Sets</Text>
             </TouchableOpacity>
           </View>
         </View>

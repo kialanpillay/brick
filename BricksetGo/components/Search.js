@@ -18,7 +18,6 @@ export default class Search extends React.Component {
       username: this.props.username,
       apiKey: '3-erab-QjV7-Kvhvh',
       hash: this.props.hash,
-      status: '',
       loading: false,
       query: '',
       response: [],
