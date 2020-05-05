@@ -77,7 +77,6 @@ export default class Home extends React.Component {
         this.state.subthemeSelection +
         '"}';
     }
-    console.log(params);
     fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
       method: 'GET',
     })
