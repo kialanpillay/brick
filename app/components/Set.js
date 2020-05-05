@@ -23,10 +23,67 @@ export default class Search extends React.Component {
       wanted: false,
       response: [],
       loading: false,
+      viewerVisibile: false,
+      locationData: null,
+      currencyData: null,
+      localPrice: 0,
+      currencySymbol: '',
     };
     this.query = this.query.bind(this);
     this.processQuery = this.processQuery.bind(this);
+    this.setViewerVisibile = this.setViewerVisibile.bind(this);
+    this.getLocation = this.getLocation.bind(this);
+    this.getCurrency = this.getCurrency.bind(this);
+    this.calculateLocalPrice = this.calculateLocalPrice.bind(this);
   }
+
+  calculateLocalPrice = () => {
+    const price =
+      this.props.item.LEGOCom.US.retailPrice *
+      this.state.currencyData.rates[this.state.locationData.currency];
+    this.setState({
+      localPrice: price.toFixed(2),
+      currencySymbol: this.state.locationData.currency,
+    });
+    console.log(this.state.localPrice);
+  };
+
+  getCurrency = () => {
+    let currency = 'ZAR';
+    if (this.state.locationData != null) {
+      currency = this.state.locationData.currency;
+    }
+    fetch('http://api.openrates.io/latest?base=USD&symbols=' + currency)
+      .then(response => response.json())
+      .then(response => {
+        this.setState({currencyData: response});
+      })
+      .catch(err => {
+        console.log('Fetch Error', err.message);
+      })
+      .then(this.calculateLocalPrice);
+  };
+
+  getLocation = () => {
+    console.log('location');
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(response => {
+        this.setState({
+          locationData: response,
+        });
+      })
+      .catch(function(e) {
+        console.log('Fetch Failed' + e.message);
+      })
+      .then(this.getCurrency);
+  };
+
+  setViewerVisibile = () => {
+    this.setState({
+      viewerVisibile: !this.state.viewerVisibile,
+    });
+  };
 
   processQuery = () => {
     this.setState({
@@ -65,9 +122,11 @@ export default class Search extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.item);
     if (this.state.hash != '') {
       this.query();
+    }
+    if (this.state.locationData == null) {
+      this.getLocation();
     }
   }
 
@@ -98,6 +157,7 @@ export default class Search extends React.Component {
                 </Text>
               </View>
             </View>
+
             <View style={styles.row}>
               <View style={styles.themeBox}>
                 <Text style={styles.theme}>{this.props.item.theme}</Text>
@@ -114,11 +174,12 @@ export default class Search extends React.Component {
               </View>
               <View style={styles.priceBox}>
                 <Text style={styles.price}>
-                  ${this.props.item.LEGOCom.UK.retailPrice}
+                  {this.state.currencySymbol}
+                  {this.state.localPrice}
                 </Text>
               </View>
             </View>
-
+            <Text style={styles.sectionSubtitle}>Collection Statistics</Text>
             <View style={styles.row}>
               <View style={styles.collectionsBox}>
                 <Text style={styles.collections}>
@@ -131,32 +192,52 @@ export default class Search extends React.Component {
                 </Text>
               </View>
             </View>
-            <View style={styles.ownedBox}>
-              <Text style={styles.collections}>
-                {this.state.owned == true
-                  ? 'You Own ' + this.state.qty + ' of ' + this.props.item.number
-                  : "You Don't Own " + + this.props.item.number}
-              </Text>
-            </View>
-            <View style={styles.wantedBox}>
-              <Text style={styles.collections}>
-                {this.state.wanted == true
-                  ? 'You Want ' + this.props.item.number
-                  : "You Don't Want " + this.props.item.number}
-              </Text>
-            </View>
-            <View style={styles.box}>
-              <TouchableOpacity activeOpacity={0.8}>
-                <Image
-                  style={styles.image}
-                  resizeMethod="auto"
-                  resizeMode="center"
-                  source={{
-                    uri: this.props.item.image.imageURL,
-                  }}
-                />
+            <View style={styles.row}>
+              <View style={styles.ownedBox}>
+                <Text style={styles.collection}>
+                  {this.state.owned == true
+                    ? 'You Own ' + this.state.qty + ' of This Set'
+                    : "You Don't Own This Set"}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.ownedButton}
+                onPress={this.setViewerVisibile}>
+                <Text style={styles.collectionButtonText}>Own</Text>
               </TouchableOpacity>
             </View>
+            <View style={styles.row}>
+              <View style={styles.wantedBox}>
+                <Text style={styles.collection}>
+                  {this.state.wanted == true
+                    ? 'You Want This Set'
+                    : "You Don't Want This Set"}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.wantedButton}
+                onPress={this.setViewerVisibile}>
+                <Text style={styles.collectionButtonText}>Want</Text>
+              </TouchableOpacity>
+            </View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.viewerVisibile}
+              onPress={this.setViewerVisibile}>
+              <ImageViewer
+                useNativeDriver={false}
+                onClick={this.setViewerVisibile}
+                style={styles.viewer}
+                imageUrls={images}
+              />
+            </Modal>
+
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={this.setViewerVisibile}>
+              <Text style={styles.submitButtonText}>View Set Images</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </>
@@ -190,6 +271,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     marginBottom: 15,
   },
+  sectionSubtitle: {
+    marginTop: 5,
+    fontSize: 24,
+    fontWeight: '600',
+    color: 'white',
+    textAlign: 'center',
+    letterSpacing: 0,
+    marginBottom: 15,
+  },
   sectionDescription: {
     marginTop: 20,
     fontSize: 24,
@@ -206,6 +296,15 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
+  box: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modal: {
+    height: 200,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   themeBox: {
     backgroundColor: 'white',
     borderWidth: 1,
@@ -214,7 +313,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     marginRight: 20,
-    width: '65%',
+    width: '60%',
   },
   subthemeBox: {
     backgroundColor: 'white',
@@ -224,7 +323,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     marginRight: 20,
-    width: '65%',
+    width: '60%',
   },
   collectionsBox: {
     backgroundColor: 'transparent',
@@ -237,24 +336,24 @@ const styles = StyleSheet.create({
     width: '45%',
   },
   ownedBox: {
-    backgroundColor: 'green',
-    borderColor: 'green',
+    backgroundColor: 'transparent',
+    borderColor: 'white',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    marginRight: 10,
+    marginRight: 20,
     marginBottom: 10,
-    width: '80%',
+    width: '60%',
   },
   wantedBox: {
-    backgroundColor: 'orange',
-    borderColor: 'orange',
+    backgroundColor: 'transparent',
+    borderColor: 'white',
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    marginRight: 10,
+    marginRight: 20,
     marginBottom: 10,
-    width: '80%',
+    width: '60%',
   },
   priceBox: {
     backgroundColor: 'white',
@@ -263,7 +362,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
-    width: '30%',
+    width: '35%',
   },
   theme: {
     fontSize: 20,
@@ -275,10 +374,14 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   price: {
-    fontSize: 22,
+    fontSize: 18,
     color: 'black',
   },
   collections: {
+    fontSize: 16,
+    color: 'white',
+  },
+  collection: {
     fontSize: 16,
     color: 'white',
   },
@@ -314,19 +417,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'right',
   },
-  box: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  modal: {
-    height: 200,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  image: {
-    width: 360,
-    height: 360,
-  },
   submitButton: {
     marginTop: 20,
     backgroundColor: 'white',
@@ -335,11 +425,33 @@ const styles = StyleSheet.create({
     lineHeight: 60,
     width: '100%',
   },
+  ownedButton: {
+    backgroundColor: 'green',
+    borderRadius: 99,
+    padding: 10,
+    marginBottom: 10,
+    width: '35%',
+    height: 40,
+  },
+  wantedButton: {
+    backgroundColor: 'orange',
+    borderRadius: 99,
+    padding: 10,
+    marginBottom: 10,
+    width: '35%',
+    height: 40,
+  },
   submitButtonText: {
     color: 'black',
     marginTop: 15,
     textAlign: 'center',
     fontSize: 22,
+    letterSpacing: 0,
+  },
+  collectionButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 16,
     letterSpacing: 0,
   },
 });
