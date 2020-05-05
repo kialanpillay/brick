@@ -168,7 +168,7 @@ export default class Home extends React.Component {
                 <Text style={styles.selectionText}>Theme</Text>
 
                 <Picker
-                  itemStyle={{color: 'black', fontSize: 12}}
+                  itemStyle={{color: 'black', fontSize: 16}}
                   selectedValue={this.state.themeSelection}
                   onValueChange={(itemValue, itemIndex) => {
                     this.setState({themeSelection: itemValue});
@@ -183,7 +183,7 @@ export default class Home extends React.Component {
               <View style={styles.selection}>
                 <Text style={styles.selectionText}>Subtheme</Text>
                 <Picker
-                  itemStyle={{color: 'black', fontSize: 12}}
+                  itemStyle={{color: 'black', fontSize: 16}}
                   selectedValue={this.state.subthemeSelection}
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({subthemeSelection: itemValue})
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   sectionContainer: {
+    height: '100%',
     marginTop: 40,
     paddingHorizontal: 24,
     flex: 1,
