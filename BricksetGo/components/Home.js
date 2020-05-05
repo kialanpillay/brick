@@ -81,8 +81,12 @@ export default class Home extends React.Component {
               }}>
               <Text style={styles.submitButtonText}> Search Sets </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
-              <Text style={styles.submitButtonText}> Browse </Text>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8} onPress={() => {
+                this.props.navigation.navigate('Browse');
+              }}
+              ><Text style={styles.submitButtonText}> Browse </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
               <Text style={styles.submitButtonText}>Manage Collection</Text>

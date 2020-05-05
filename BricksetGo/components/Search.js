@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import Item from './Item.js';
-import {showMessage, hideMessage} from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -67,7 +67,7 @@ export default class Search extends React.Component {
       this.state.hash +
       '&params={query:"' +
       queryString +
-      '"}';
+      '",pageSize:500}';
     fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
       method: 'GET',
     })
