@@ -68,7 +68,6 @@ export default class Search extends React.Component {
       '&params={query:"' +
       queryString +
       '"}';
-    console.log(params);
     fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
       method: 'GET',
     })

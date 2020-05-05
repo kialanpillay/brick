@@ -7,7 +7,7 @@ import {
   Text,
   TextInput,
 } from 'react-native';
-import {showMessage, hideMessage} from 'react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 
 export default class Login extends React.Component {
   constructor(props) {

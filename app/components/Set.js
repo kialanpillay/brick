@@ -7,8 +7,10 @@ import {
   Text,
   Image,
   Modal,
+  Linking,
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {showMessage} from 'react-native-flash-message';
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -130,30 +132,40 @@ export default class Search extends React.Component {
   }
 
   setCollection = action => {
-    let params =
-      'apiKey=' +
-      this.state.apiKey +
-      '&userHash=' +
-      this.state.hash +
-      '&setID=' +
-      this.props.item.setID;
-    if (action == 'own') {
-      if (this.state.owned == true) {
-        params += '&params={own:0}';
-      } else {
-        params += '&params={qtyOwned:1}';
-      }
+    if (this.state.hash == '') {
+      showMessage({
+        message: 'Not Logged In!',
+        type: 'default',
+        backgroundColor: 'black', // background color
+        color: 'white', // text color
+        duration: 2000,
+        icon: 'warning',
+      });
     } else {
-      if (this.state.wanted == true) {
-        params += '&params={want:0}';
+      let params =
+        'apiKey=' +
+        this.state.apiKey +
+        '&userHash=' +
+        this.state.hash +
+        '&setID=' +
+        this.props.item.setID;
+      if (action == 'own') {
+        if (this.state.owned == true) {
+          params += '&params={own:0}';
+        } else {
+          params += '&params={qtyOwned:1}';
+        }
       } else {
-        params += '&params={want:1}';
+        if (this.state.wanted == true) {
+          params += '&params={want:0}';
+        } else {
+          params += '&params={want:1}';
+        }
       }
+      fetch('https://brickset.com/api/v3.asmx/setCollection?' + params, {
+        method: 'GET',
+      }).then(this.query);
     }
-    fetch('https://brickset.com/api/v3.asmx/setCollection?' + params, {
-      method: 'GET',
-    })
-      .then(this.query);
   };
 
   render() {
@@ -271,13 +283,23 @@ export default class Search extends React.Component {
             <Text style={styles.sectionSubtitle}>Insights</Text>
             <View style={styles.row}>
               <View style={styles.reviewBox}>
-                <View style={styles.row}>
-                  <Text style={styles.reviewText}>Reviews: </Text>
-                  <Text style={styles.reviews}>
-                    {this.props.item.reviewCount}
-                  </Text>
-                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://brickset.com/reviews/set-' +
+                        this.props.item.number +
+                        '-1',
+                    )
+                  }>
+                  <View style={styles.row}>
+                    <Text style={styles.reviewText}>Reviews: </Text>
+                    <Text style={styles.reviews}>
+                      {this.props.item.reviewCount}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
+
               <View style={styles.reviewBox}>
                 <View style={styles.row}>
                   <Text style={styles.reviewText}>Rating: </Text>
