@@ -35,6 +35,7 @@ export default class Search extends React.Component {
     this.getLocation = this.getLocation.bind(this);
     this.getCurrency = this.getCurrency.bind(this);
     this.calculateLocalPrice = this.calculateLocalPrice.bind(this);
+    this.setCollection = this.setCollection.bind(this);
   }
 
   calculateLocalPrice = () => {
@@ -128,6 +129,33 @@ export default class Search extends React.Component {
     }
   }
 
+  setCollection = action => {
+    let params =
+      'apiKey=' +
+      this.state.apiKey +
+      '&userHash=' +
+      this.state.hash +
+      '&setID=' +
+      this.props.item.setID;
+    if (action == 'own') {
+      if (this.state.owned == true) {
+        params += '&params={own:0}';
+      } else {
+        params += '&params={qtyOwned:1}';
+      }
+    } else {
+      if (this.state.wanted == true) {
+        params += '&params={want:0}';
+      } else {
+        params += '&params={want:1}';
+      }
+    }
+    fetch('https://brickset.com/api/v3.asmx/setCollection?' + params, {
+      method: 'GET',
+    })
+      .then(this.query);
+  };
+
   render() {
     const images = [{url: this.props.item.image.imageURL}];
     return (
@@ -194,13 +222,13 @@ export default class Search extends React.Component {
               <View style={styles.ownedBox}>
                 <Text style={styles.collection}>
                   {this.state.owned == true
-                    ? 'You Own ' + this.state.qty + ' of This Set'
-                    : "You Don't Own This Set"}
+                    ? 'I Own ' + this.state.qty + ' of This Set'
+                    : "I Don't Own This Set"}
                 </Text>
               </View>
               <TouchableOpacity
                 style={styles.ownedButton}
-                onPress={this.setViewerVisibile}>
+                onPress={() => this.setCollection('own')}>
                 <Text style={styles.collectionButtonText}>
                   {this.state.qty == 0 ? 'Own' : 'Edit'}
                 </Text>
@@ -210,13 +238,13 @@ export default class Search extends React.Component {
               <View style={styles.wantedBox}>
                 <Text style={styles.collection}>
                   {this.state.wanted == true
-                    ? 'You Want This Set'
-                    : "You Don't Want This Set"}
+                    ? 'I Want This Set'
+                    : "I Don't Want This Set"}
                 </Text>
               </View>
               <TouchableOpacity
                 style={styles.wantedButton}
-                onPress={this.setViewerVisibile}>
+                onPress={() => this.setCollection('want')}>
                 <Text style={styles.collectionButtonText}>
                   {this.state.wanted == true ? 'Edit' : 'Want'}
                 </Text>
