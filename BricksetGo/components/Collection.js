@@ -21,8 +21,14 @@ export default class Collection extends React.Component {
     };
     this.getOwned = this.getOwned.bind(this);
     this.getWanted = this.getWanted.bind(this);
-    this.getMinifigs = this.getWanted.bind(this);
+    this.getMinifigs = this.getMinifigs.bind(this);
+    this.setMode = this.setMode.bind(this);
   }
+
+  setMode = mode => {
+    this.props.setMode(mode);
+    this.props.navigation.navigate('MySets');
+  };
 
   getMinifigs = () => {
     let params =
@@ -57,7 +63,6 @@ export default class Collection extends React.Component {
       method: 'GET',
     })
       .then(response => response.json())
-      .then(response => console.log(response))
       .then(response => {
         this.setState({
           ownedCount: response.matches,
@@ -81,7 +86,6 @@ export default class Collection extends React.Component {
       method: 'GET',
     })
       .then(response => response.json())
-      .then(response => console.log(response))
       .then(response => {
         this.setState({
           wantedCount: response.matches,
@@ -117,10 +121,16 @@ export default class Collection extends React.Component {
             <Text style={styles.sectionDescription}>
               {this.state.minifigCount} Minifigs
             </Text>
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8}
+              onPress={() => this.setMode(true)}>
               <Text style={styles.submitButtonText}> View Sets You Own </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              activeOpacity={0.8}
+              onPress={() => this.setMode(false)}>
               <Text style={styles.submitButtonText}> View Sets You Want </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>

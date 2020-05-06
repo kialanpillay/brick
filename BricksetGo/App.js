@@ -8,6 +8,7 @@ import Search from './components/Search.js';
 import Set from './components/Set.js';
 import Browse from './components/Browse.js';
 import Collection from './components/Collection.js';
+import MySets from './components/MySets.js';
 import FlashMessage from "react-native-flash-message";
 Stack = createStackNavigator();
 
@@ -21,9 +22,11 @@ class App extends React.Component {
       status: 'Empty',
       loading: false,
       data: [],
+      owned: true,
     };
     this.setUser = this.setUser.bind(this);
     this.setItem = this.setItem.bind(this);
+    this.setMode = this.setMode.bind(this);
   }
 
   setUser = (username, hash) => {
@@ -32,6 +35,10 @@ class App extends React.Component {
 
   setItem = (item) => {
     this.setState({data: item});
+  };
+
+  setMode = (mode) => {
+    this.setState({owned: mode});
   };
 
   render() {
@@ -55,7 +62,10 @@ class App extends React.Component {
               {props => <Browse {...props} setItem={this.setItem} username={this.state.username} hash={this.state.hash} />}
             </Stack.Screen>
             <Stack.Screen name="Collection" options={{headerShown: false}}>
-              {props => <Collection {...props} username={this.state.username} hash={this.state.hash} />}
+              {props => <Collection {...props} setMode={this.setMode} username={this.state.username} hash={this.state.hash} />}
+            </Stack.Screen>
+            <Stack.Screen name="MySets" options={{headerShown: false}}>
+              {props => <MySets {...props} setItem={this.setItem} username={this.state.username} hash={this.state.hash} />}
             </Stack.Screen>
           </Stack.Navigator>
           <FlashMessage ref="myLocalFlashMessage" />
