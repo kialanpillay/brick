@@ -133,9 +133,6 @@ export default class Collection extends React.Component {
               onPress={() => this.setMode(false)}>
               <Text style={styles.submitButtonText}> View Sets You Want </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.submitButton} activeOpacity={0.8}>
-              <Text style={styles.submitButtonText}> View Your Minifigs </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </>

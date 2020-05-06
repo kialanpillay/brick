@@ -1,6 +1,15 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import {StyleSheet, TouchableOpacity, View, Text, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  FlatList,
+  Modal,
+  TouchableHighlight,
+} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import Item from './Item.js';
 
 export default class Search extends React.Component {
@@ -14,11 +23,18 @@ export default class Search extends React.Component {
       query: '',
       response: [],
       data: [],
+      sortOption: 'Number',
+      modalVisible: false,
     };
     this.query = this.query.bind(this);
     this.processQuery = this.processQuery.bind(this);
     this.setItem = this.setItem.bind(this);
+    this.setModalVisible = this.setModalVisible.bind(this);
   }
+
+  setModalVisible = () => {
+    this.setState({modalVisible: !this.state.modalVisible});
+  };
 
   setItem = item => {
     this.props.setItem(item);
@@ -31,25 +47,24 @@ export default class Search extends React.Component {
     });
   };
 
-  query = () => {
+  query = (option) => {
     let params = '';
-    console.log("MySet"+this.props.mode)
     if (this.props.mode == true) {
       params =
         'apiKey=' +
         this.state.apiKey +
         '&userHash=' +
         this.state.hash +
-        '&params={owned:1}';
+        '&params={owned:1,pageSize:500,orderBy:"' + option+ '"}';
     } else {
       params =
         'apiKey=' +
         this.state.apiKey +
         '&userHash=' +
         this.state.hash +
-        '&params={wanted:1}';
+        '&params={owned:1,pageSize:500,orderBy:"' + option+ '"}';
     }
-
+    console.log(params)
     fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
       method: 'GET',
     })
@@ -66,16 +81,62 @@ export default class Search extends React.Component {
       .then(this.processQuery);
   };
 
-  componentDidMount(){
-      this.query();
+  componentDidMount() {
+    this.query(this.state.sortOption);
   }
 
   render() {
+    const options = [
+      'Number',
+      'YearFrom',
+      'Pieces',
+      'Minifigs',
+      'Rating',
+      'Theme',
+      'Subtheme',
+      'Name',
+      'Random',
+    ];
     return (
       <>
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{this.props.mode == true ? "Sets You Own" : "Sets You Want"}</Text>
+            <Text style={styles.sectionTitle}>
+              {this.props.mode == true ? 'Sets You Own' : 'Sets You Want'}
+            </Text>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modalVisible}>
+              <View style={styles.modalView}>
+              <Text style={styles.selectionText}>Sort Options</Text>
+                <View style={styles.selection}>
+            
+                  <Picker
+                    itemStyle={{color: 'black', fontSize: 16}}
+                    selectedValue={this.state.sortOption}
+                    onValueChange={(itemValue, itemIndex) => {
+                      this.setState({sortOption: itemValue});
+                      this.query(itemValue);
+                    }}>
+                    {options.map((o, i) => {
+                      return <Picker.Item key={i} label={o} value={o} />;
+                    })}
+                  </Picker>
+                  </View>
+                <TouchableHighlight
+                  style={{...styles.openButton, backgroundColor: '#2196F3'}}
+                  onPress={this.setModalVisible}>
+                  <Text style={styles.textStyle}>Hide Options</Text>
+                </TouchableHighlight>
+              </View>
+            </Modal>
+            <TouchableHighlight
+              style={styles.openButton}
+              onPress={this.setModalVisible}>
+              <Text style={styles.textStyle}>Display Options</Text>
+            </TouchableHighlight>
+
             <FlatList
               style={styles.list}
               keyExtractor={item => item.setID.toString()}
@@ -110,6 +171,7 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     flexDirection: 'column',
+    marginTop: 20,
     marginBottom: 40,
   },
   sectionTitle: {
@@ -129,14 +191,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
-  input: {
-    marginTop: 20,
-    marginBottom: 15,
-    height: 40,
-    fontSize: 20,
-    borderColor: 'white',
-    borderBottomWidth: 2,
-    color: 'white',
+  selection: {
+    width: '100%',
+  },
+  selectionText: {
+    fontSize: 24,
+    color: 'black',
+    textAlign: 'center',
   },
   submitButton: {
     marginTop: 20,
@@ -153,5 +214,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '400',
+  },
+  modalView: {
+    margin: 20,
+    marginTop: 70,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'black',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });

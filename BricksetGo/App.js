@@ -22,7 +22,7 @@ class App extends React.Component {
       status: 'Empty',
       loading: false,
       data: [],
-      owned: true,
+      mode: true,
     };
     this.setUser = this.setUser.bind(this);
     this.setItem = this.setItem.bind(this);
@@ -38,7 +38,7 @@ class App extends React.Component {
   };
 
   setMode = (mode) => {
-    this.setState({owned: mode});
+    this.setState({mode: mode});
   };
 
   render() {
@@ -65,7 +65,7 @@ class App extends React.Component {
               {props => <Collection {...props} setMode={this.setMode} username={this.state.username} hash={this.state.hash} />}
             </Stack.Screen>
             <Stack.Screen name="MySets" options={{headerShown: false}}>
-              {props => <MySets {...props} setItem={this.setItem} username={this.state.username} hash={this.state.hash} />}
+              {props => <MySets {...props} mode={this.state.mode} setItem={this.setItem} username={this.state.username} hash={this.state.hash} />}
             </Stack.Screen>
           </Stack.Navigator>
           <FlashMessage ref="myLocalFlashMessage" />
