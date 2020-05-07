@@ -62,9 +62,8 @@ export default class Search extends React.Component {
         this.state.apiKey +
         '&userHash=' +
         this.state.hash +
-        '&params={owned:1,pageSize:500,orderBy:"' + option+ '"}';
+        '&params={wanted:1,pageSize:500,orderBy:"' + option+ '"}';
     }
-    console.log(params)
     fetch('https://brickset.com/api/v3.asmx/getSets?' + params, {
       method: 'GET',
     })
@@ -124,18 +123,18 @@ export default class Search extends React.Component {
                     })}
                   </Picker>
                   </View>
-                <TouchableHighlight
+                <TouchableOpacity
                   style={{...styles.openButton, backgroundColor: '#2196F3'}}
                   onPress={this.setModalVisible}>
                   <Text style={styles.textStyle}>Hide Options</Text>
-                </TouchableHighlight>
+                </TouchableOpacity>
               </View>
             </Modal>
-            <TouchableHighlight
+            <TouchableOpacity
               style={styles.openButton}
               onPress={this.setModalVisible}>
               <Text style={styles.textStyle}>Display Options</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
 
             <FlatList
               style={styles.list}
@@ -199,22 +198,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
   },
-  submitButton: {
-    marginTop: 20,
-    marginBottom: 20,
-    backgroundColor: 'white',
-    height: 60,
-    borderRadius: 99,
-    lineHeight: 60,
-    width: '100%',
-  },
-  submitButtonText: {
-    color: 'black',
-    marginTop: 15,
-    textAlign: 'center',
-    fontSize: 22,
-    fontWeight: '400',
-  },
   modalView: {
     margin: 20,
     marginTop: 70,
@@ -245,4 +228,21 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+  submitButton: {
+    marginTop: 20,
+    marginBottom: 20,
+    backgroundColor: 'white',
+    height: 60,
+    borderRadius: 99,
+    lineHeight: 60,
+    width: '100%',
+  },
+  submitButtonText: {
+    color: 'black',
+    marginTop: 15,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '400',
+  },
+
 });
