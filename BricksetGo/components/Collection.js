@@ -109,7 +109,7 @@ export default class Collection extends React.Component {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.box}>
-              <Image style={styles.logo} source={require('./logo.png')} />
+              <Image style={styles.logo} source={require('./logo-transparent.png')} />
             </View>
             <Text style={styles.sectionTitle}>Collection Overview</Text>
             <Text style={styles.sectionDescription}>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginBottom: 30,
-    height: 100,
-    width: 100,
+    height: 120,
+    width: 120,
   },
 });

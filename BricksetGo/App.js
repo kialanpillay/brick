@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'react-native-gesture-handler';
+import SplashScreen from 'react-native-splash-screen'
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Login from './components/Login.js';
@@ -27,6 +28,10 @@ class App extends React.Component {
     this.setUser = this.setUser.bind(this);
     this.setItem = this.setItem.bind(this);
     this.setMode = this.setMode.bind(this);
+  }
+
+  componentDidMount(){
+    SplashScreen.hide();
   }
 
   setUser = (username, hash) => {

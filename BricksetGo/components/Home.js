@@ -19,7 +19,7 @@ export default class Home extends React.Component {
         <View style={styles.body}>
           <View style={styles.sectionContainer}>
             <View style={styles.box}>
-              <Image style={styles.logo} source={require('./logo.png')} />
+              <Image style={styles.logo} source={require('./logo-transparent.png')} />
             </View>
             <Text style={styles.sectionTitle}>
               Welcome, {this.state.username}
@@ -120,12 +120,13 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   box: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
   },
   logo: {
     marginBottom: 30,
-    height: 100,
-    width: 100,
+    height: 120,
+    width: 120,
   },
 });
