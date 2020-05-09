@@ -308,7 +308,7 @@ export default class Search extends React.Component {
               </View>
             </View>
             <View style={styles.box}>
-              <Image style={styles.logo} source={require('./logo.png')} />
+              <Image style={styles.logo} source={require('./logo-transparent.png')} />
             </View>
           </View>
         </View>
