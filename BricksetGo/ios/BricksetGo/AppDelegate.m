@@ -45,6 +45,7 @@ static void InitializeFlipper(UIApplication *application) {
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [RNSplashScreen show];
+  GADMobileAds.sharedInstance().start(completionHandler: nil)
   return YES;
 }
 
